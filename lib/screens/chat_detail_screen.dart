@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import '../services/socket_service.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String name;
@@ -11,26 +11,30 @@ class ChatDetailScreen extends StatefulWidget {
 
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final _controller = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [
-    {'text': 'Salom!', 'isMe': false},
-    {'text': 'Qandaysan?', 'isMe': false},
-    {'text': 'Yaxshi, sen-chi?', 'isMe': true},
-  ];
+  final _socket = SocketService();
+  final List<Map<String, dynamic>> _messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _socket.onChatMessage((data) {
+      if (mounted) {
+        setState(() => _messages.add(data));
+      }
+    });
+  }
 
   void _send() {
-    if (_controller.text.trim().isEmpty) return;
-    setState(() {
-      _messages.add({'text': _controller.text, 'isMe': true});
-      _controller.clear();
-    });
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+    _socket.sendMessage('user1', 'friend1', text); // demo ids
+    _controller.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.name),
-      ),
+      appBar: AppBar(title: Text(widget.name)),
       body: Column(
         children: [
           Expanded(
@@ -39,7 +43,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final msg = _messages[index];
-                final isMe = msg['isMe'] as bool;
+                final isMe = msg['from'] == 'user1';
                 return Align(
                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
@@ -49,7 +53,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       color: isMe ? const Color(0xFF6C63FF) : Colors.white.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Text(msg['text'] as String),
+                    child: Text(msg['text'] ?? ''),
                   ),
                 );
               },
@@ -60,24 +64,19 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: GlassContainer(
-                    borderRadius: BorderRadius.circular(24),
-                    child: TextField(
-                      controller: _controller,
-                      decoration: const InputDecoration(
-                        hintText: 'Xabar yozing...',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
-                      onSubmitted: (_) => _send(),
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Xabar yozing...',
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.08),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
+                    onSubmitted: (_) => _send(),
                   ),
                 ),
-                const SizedBox(width: 8),
-                IconButton(
-                  onPressed: _send,
-                  icon: const Icon(Icons.send, color: Color(0xFF6C63FF)),
-                ),
+                IconButton(onPressed: _send, icon: const Icon(Icons.send, color: Color(0xFF6C63FF))),
               ],
             ),
           ),
