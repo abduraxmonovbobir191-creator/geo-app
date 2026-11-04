@@ -24,7 +24,7 @@ jobs:
       - name: Create Android project if missing
         run: |
           if [ ! -d "android" ]; then
-            flutter create . --platforms=android
+            flutter create . --platforms=android --project-name=geo_app
           fi
 
       - name: Build APK
