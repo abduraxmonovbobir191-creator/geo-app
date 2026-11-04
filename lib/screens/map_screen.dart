@@ -11,29 +11,52 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final _socket = SocketService();
-  final List<Map<String, dynamic>> _friends = [];
+  final List<Map<String, dynamic>> _friends = [
+    {'name': 'Ali', 'online': true, 'distance': '120 m'},
+    {'name': 'Malika', 'online': true, 'distance': '450 m'},
+    {'name': 'Jasur', 'online': false, 'distance': '1.2 km'},
+  ];
 
   @override
   void initState() {
     super.initState();
-    // Demo user (later from Nex ID)
     _socket.connect(userId: 'user1', name: 'Men');
+  }
 
-    _socket.onLocationUpdate((data) {
-      setState(() {
-        final existing = _friends.indexWhere((f) => f['userId'] == data['userId']);
-        if (existing >= 0) {
-          _friends[existing] = data;
-        } else {
-          _friends.add(data);
-        }
-      });
-    });
-
-    // Demo location update
-    Future.delayed(const Duration(seconds: 2), () {
-      _socket.updateLocation('user1', 41.2995, 69.2401); // Tashkent
-    });
+  void _showFriendsSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A24).withOpacity(0.95),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2))),
+            const SizedBox(height: 16),
+            const Text('Do\'stlar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            ..._friends.map((f) => ListTile(
+              leading: Stack(
+                children: [
+                  CircleAvatar(backgroundColor: const Color(0xFF6C63FF), child: Text(f['name'][0])),
+                  if (f['online']) Positioned(right: 0, bottom: 0, child: Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle, border: Border.all(color: Colors.black, width: 2)))),
+                ],
+              ),
+              title: Text(f['name']),
+              subtitle: Text(f['distance'], style: const TextStyle(color: Colors.white54)),
+              trailing: IconButton(icon: const Icon(Icons.chat_bubble_outline), onPressed: () {}),
+            )),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -41,84 +64,90 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          // Map area
           Container(
             color: const Color(0xFF0F0F18),
             child: const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.map, size: 80, color: Colors.white24),
-                  SizedBox(height: 16),
-                  Text('Real-time xarita (Socket.io ulangan)', style: TextStyle(color: Colors.white54)),
+                  Icon(Icons.public, size: 100, color: Colors.white12),
+                  SizedBox(height: 12),
+                  Text('O\'z serveringizdagi 3D xarita', style: TextStyle(color: Colors.white38, fontSize: 16)),
                 ],
               ),
             ),
           ),
-          // Search
+
+          // Top search + filter
           Positioned(
             top: 50,
             left: 16,
             right: 16,
-            child: GlassContainer(
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  children: [
-                    Icon(Icons.search, color: Colors.white70),
-                    SizedBox(width: 12),
-                    Text('Qidiruv...', style: TextStyle(color: Colors.white54)),
-                  ],
+            child: Row(
+              children: [
+                Expanded(
+                  child: GlassContainer(
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.white70),
+                          SizedBox(width: 12),
+                          Text('Joy yoki do\'st qidirish...', style: TextStyle(color: Colors.white54)),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                GlassContainer(
+                  borderRadius: BorderRadius.circular(16),
+                  child: IconButton(
+                    icon: const Icon(Icons.tune, color: Colors.white70),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
             ),
           ),
-          // Friends markers from real-time
-          ..._friends.asMap().entries.map((entry) {
-            final i = entry.key;
-            final f = entry.value;
-            return Positioned(
-              top: 150.0 + (i * 80),
-              left: 30.0 + (i * 40),
-              child: _FriendMarker(name: f['name'] ?? 'Do\'st'),
-            );
-          }),
+
+          // Right side buttons
           Positioned(
-            bottom: 100,
             right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                _socket.updateLocation('user1', 41.3, 69.25);
-              },
-              backgroundColor: const Color(0xFF6C63FF),
-              child: const Icon(Icons.my_location),
+            bottom: 180,
+            child: Column(
+              children: [
+                GlassContainer(
+                  borderRadius: BorderRadius.circular(16),
+                  child: IconButton(icon: const Icon(Icons.layers_outlined), onPressed: () {}),
+                ),
+                const SizedBox(height: 8),
+                GlassContainer(
+                  borderRadius: BorderRadius.circular(16),
+                  child: IconButton(icon: const Icon(Icons.my_location), onPressed: () {}),
+                ),
+              ],
+            ),
+          ),
+
+          // Bottom friends bar
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 30,
+            child: GlassContainer(
+              child: ListTile(
+                leading: const CircleAvatar(child: Icon(Icons.people)),
+                title: const Text('Do\'stlar'),
+                subtitle: Text('${_friends.where((f) => f['online']).length} online'),
+                trailing: const Icon(Icons.keyboard_arrow_up),
+                onTap: _showFriendsSheet,
+              ),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _FriendMarker extends StatelessWidget {
-  final String name;
-  const _FriendMarker({required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 22,
-          backgroundColor: const Color(0xFF6C63FF),
-          child: Text(name.isNotEmpty ? name[0] : '?', style: const TextStyle(color: Colors.white)),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(8)),
-          child: Text(name, style: const TextStyle(fontSize: 12, color: Colors.white)),
-        ),
-      ],
     );
   }
 }
