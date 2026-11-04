@@ -1,0 +1,20 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# Platform folders are generated in CI by `flutter create` (see .github/workflows/build.yml)
+# and patched by tool/configure_android.sh, so they are not committed for now.
+/android/
+/ios/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+.DS_Store
