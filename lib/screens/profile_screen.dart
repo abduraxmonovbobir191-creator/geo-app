@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'subscription_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -35,8 +36,21 @@ class ProfileScreen extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.card_membership),
                 title: const Text('Obuna'),
-                subtitle: const Text('Oylik reja'),
+                subtitle: const Text('Premium ga o\'ting'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            GlassContainer(
+              child: ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Sozlamalar'),
                 onTap: () {},
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
-import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const GeoApp());
@@ -15,7 +15,7 @@ class GeoApp extends StatelessWidget {
       title: 'Geo App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }
