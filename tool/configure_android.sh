@@ -27,7 +27,8 @@ fi
 # newer than the Kotlin Gradle plugin in older Flutter templates.
 for settings in android/settings.gradle android/settings.gradle.kts; do
   if [ -f "$settings" ]; then
-    sed -i -E 's#(id[ (]*"org\.jetbrains\.kotlin\.android"[ )]*version[ (]*")[^"]+(")#\12.1.0\2#' "$settings"
+    # Only raise 1.x versions; newer templates already ship Kotlin 2.
+    sed -i -E 's#(id[ (]*"org\.jetbrains\.kotlin\.android"[ )]*version[ (]*")1\.[^"]+(")#\12.1.0\2#' "$settings"
     grep -n 'org.jetbrains.kotlin.android' "$settings"
   fi
 done
