@@ -1,7 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
+// latlong2 also exports a `Path` class, which would hide dart:ui's Path used for drawing.
+import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../models.dart';
 
