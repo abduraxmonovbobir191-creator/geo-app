@@ -1,46 +1,51 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import 'chat_detail_screen.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final chats = [
-      {'name': 'Ali', 'last': 'Salom, qayerdasan?', 'time': '12:30'},
-      {'name': 'Malika', 'last': 'Xaritada ko\'rishamiz', 'time': '11:15'},
-      {'name': 'Jasur', 'last': 'Ok, kelaman', 'time': 'Kecha'},
-    ];
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: chats.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          final chat = chats[index];
-          return GlassContainer(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: const Color(0xFF6C63FF),
-                child: Text(chat['name']![0]),
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Chatlar', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                  IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
+                ],
               ),
-              title: Text(chat['name']!),
-              subtitle: Text(chat['last']!, style: const TextStyle(color: Colors.white60)),
-              trailing: Text(chat['time']!, style: const TextStyle(fontSize: 12, color: Colors.white54)),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ChatDetailScreen(name: chat['name']!),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.emoji_emotions),
+                    SizedBox(width: 12),
+                    Expanded(child: Text('Menga yozing va xaritada izlarni qidiring')),
+                    Icon(Icons.close, size: 18),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const CircleAvatar(child: Icon(Icons.star)),
+                title: const Text('Geo News'),
+                subtitle: const Text('Salom, hurmatli... \u00b7 25 sent'),
+                trailing: Container(width: 8, height: 8, decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.circle)),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
