@@ -3,11 +3,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-import '../config.dart';
 import '../models.dart';
 import '../state/session.dart';
 import '../utils/format.dart';
 import '../widgets/common.dart';
+import '../widgets/map_layers.dart';
 
 /// One activity with its full route on the map. Pops `true` when it was deleted.
 class ActivityScreen extends StatefulWidget {
@@ -117,13 +117,13 @@ class _Body extends StatelessWidget {
                     interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
                   ),
                   children: [
-                    TileLayer(urlTemplate: AppConfig.tileUrl, userAgentPackageName: AppConfig.packageName),
+                    baseTileLayer(context),
                     PolylineLayer(polylines: [Polyline(points: route, strokeWidth: 5, color: scheme.primary)]),
                     MarkerLayer(markers: [
                       _dot(route.first, const Color(0xFF2ECC71)),
                       _dot(route.last, const Color(0xFFE74C3C)),
                     ]),
-                    const RichAttributionWidget(attributions: [TextSourceAttribution('OpenStreetMap contributors')]),
+                    mapAttribution,
                   ],
                 ),
         ),

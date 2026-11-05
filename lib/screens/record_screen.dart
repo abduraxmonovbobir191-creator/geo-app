@@ -6,12 +6,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-import '../config.dart';
 import '../models.dart';
 import '../services/location_service.dart';
 import '../state/session.dart';
 import '../utils/format.dart';
 import '../widgets/common.dart';
+import '../widgets/map_layers.dart';
 import 'activity_screen.dart';
 
 enum _Phase { idle, recording, paused }
@@ -189,7 +189,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
                   ),
                   children: [
-                    TileLayer(urlTemplate: AppConfig.tileUrl, userAgentPackageName: AppConfig.packageName),
+                    baseTileLayer(context),
                     if (line.length >= 2)
                       PolylineLayer(polylines: [Polyline(points: line, strokeWidth: 6, color: scheme.primary)]),
                     if (line.isNotEmpty)
@@ -215,7 +215,7 @@ class _RecordScreenState extends State<RecordScreen> {
                           ),
                         ),
                       ]),
-                    const RichAttributionWidget(attributions: [TextSourceAttribution('OpenStreetMap contributors')]),
+                    mapAttribution,
                   ],
                 ),
                 if (_phase == _Phase.idle)

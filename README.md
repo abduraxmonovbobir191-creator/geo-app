@@ -18,9 +18,10 @@ API hujjati serverning `/docs` sahifasida.
 Har bir push'da GitHub Actions APK yig'adi: **Actions > Build APK > oxirgi ishga tushirish > Artifacts >
 nex-map-apk**.
 
-Ilova qaysi serverga ulanishini belgilash uchun repo sozlamalarida `API_URL` o'zgaruvchisini qo'shing
-(Settings > Secrets and variables > Actions > Variables), masalan `https://api.nexmap.uz`.
-Ilovadagi kirish sahifasida (yuqori o'ng burchakdagi server belgisi) manzilni qo'lda ham o'zgartirish mumkin.
+Ilova sukut bo'yicha `https://api.nexecos.com` serveriga va `https://tiles.nexecos.com` xaritasiga ulanadi
+(o'rnatish: geo-backend repodagi `deploy/README.md`). Boshqa server uchun repo sozlamalarida `API_URL`
+o'zgaruvchisini qo'shing (Settings > Secrets and variables > Actions > Variables). Ilovadagi kirish sahifasida
+(yuqori o'ng burchakdagi server belgisi) manzilni qo'lda ham o'zgartirish mumkin.
 
 ## Kompyuterda ishga tushirish
 
@@ -49,7 +50,7 @@ tool/configure_android.sh  android/ papkasini sozlash
 
 ## Eslatmalar
 
-- Xarita OpenStreetMap'ning ochiq serveridan olinadi. Ko'p foydalanuvchiga chiqarishdan oldin o'z tile serveringiz
-  yoki provayder (MapTiler, Stadia va h.k.) kerak: `--dart-define=TILE_URL=...`.
+- Xarita o'zimizning tile serverimizdan olinadi (Protomaps / OpenStreetMap ma'lumotlari). Boshqa manba uchun:
+  `--dart-define=TILE_URL=...` (`{style}` light/dark, `{r}` yuqori aniqlik uchun @2x bo'ladi).
 - iOS uchun build hali sozlanmagan (macOS kerak). `flutter create . --platforms=ios` dan keyin `Info.plist`ga
   joylashuv ruxsati matnlarini qo'shish kerak bo'ladi.

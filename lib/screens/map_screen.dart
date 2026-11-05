@@ -5,13 +5,13 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-import '../config.dart';
 import '../models.dart';
 import '../services/location_service.dart';
 import '../state/live_state.dart';
 import '../state/session.dart';
 import '../utils/format.dart';
 import '../widgets/common.dart';
+import '../widgets/map_layers.dart';
 import 'chat_screen.dart';
 
 /// Main map: you, your friends live (Blink-style), places and address search (Yandex-style).
@@ -216,7 +216,7 @@ class _MapScreenState extends State<MapScreen> {
               interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
             ),
             children: [
-              TileLayer(urlTemplate: AppConfig.tileUrl, userAgentPackageName: AppConfig.packageName),
+              baseTileLayer(context),
               if (_showPlaces)
                 MarkerLayer(
                   markers: [
@@ -261,7 +261,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                 ],
               ),
-              const RichAttributionWidget(attributions: [TextSourceAttribution('OpenStreetMap contributors')]),
+              mapAttribution,
             ],
           ),
           SafeArea(

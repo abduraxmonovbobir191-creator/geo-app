@@ -41,12 +41,12 @@ jobs:
         run: flutter test
 
       # Set the repository variable API_URL (Settings > Secrets and variables > Actions > Variables)
-      # to your server, e.g. https://api.nexmap.uz. Without it the app talks to the emulator host.
+      # to your server, e.g. a staging server. Without it the app uses https://api.nexecos.com.
       - name: Build universal APK
         run: >
           flutter build apk --release
           --target-platform android-arm,android-arm64,android-x64
-          --dart-define=API_URL=${{ vars.API_URL || 'http://10.0.2.2:3000' }}
+          --dart-define=API_URL=${{ vars.API_URL || 'https://api.nexecos.com' }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
